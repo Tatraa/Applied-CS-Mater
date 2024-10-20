@@ -10,11 +10,11 @@
 
 ## Projektowanie Wspomagane Komputerem
 
-###  44. Rodzaje i charakterystyka akcji projektowych
+### 44. Rodzaje i charakterystyka akcji projektowych
 
-###  45. Narzędzia wykorzystywane w projektowaniu wizualnym i ich charakterystyka
+### 45. Narzędzia wykorzystywane w projektowaniu wizualnym i ich charakterystyka
 
-###  46.  Definicja interpretacji grafu
+### 46.  Definicja interpretacji grafu
 
 ## E-Biznes
 
