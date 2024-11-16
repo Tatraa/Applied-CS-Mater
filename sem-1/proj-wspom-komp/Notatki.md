@@ -9,3 +9,7 @@ https://github.com/iwonagg/StoryGraph - zrobić clona i się pobawić
 Najpierw fabuła rozgrywki - a potem przetestowanie przez kod
 
 Opisanie strukture fabuły.
+
+Zerknąć w pliki na teamsach po dokumentacje jak stworzyć diagram
+
+
