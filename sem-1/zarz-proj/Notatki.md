@@ -70,3 +70,117 @@ __Vertical Slice vs Horizontal Slice__
 Vertical - ![alt text](../../img/image.png)
 
 Horizontal - Jeden Feature na jeden End-line
+
+## Wykład 2
+
+__Metodyki zarządzania__
+
+__Waterfall:__
+-   Metodologie klasyczne
+-   Bardzo problematyczne, obecnoe rzadko stosowane ew. na małą skale produkcyjną
+-   Albo z powodu prawidłowego zarządzania projektami
+
+Proces może się zacząć jeżeli poprzedni się zakończył (ex. Wymagania->Projekt->Implementacja->Walidacja->Maintenance).
+
+Zakładamy że zawsze jak proces sie kończy to jest wszystko w porządku - a w większości przypadków tak nie jest.
+
+__LEAN:__
+-   W oparciu o Lean management, opracowane i wdrożone w Toyocie
+-   Podejście systemowe
+-   Wprowadzenie "Pull" vs "Push"
+-   Siedem zasad Lean:
+    -   Eliminate waste
+    -   Build quality in
+    -   Create knowledge
+    -   Defer commitment
+    -   Deliver fast
+    -   Respect people
+    -   Optimize the whole
+
+__Agile:__
+-   Loop między Ownerem, zespołem i klientem - nastawiony na szybkie iteracje
+
+__Frameworki procesowe__
+
+__XP__:
+-   Małe i średnie "ryzykowne" projekty
+-   Przyrost iteracyjny
+-   Unit testy
+-   Refaktoryzacja
+-   Kontakt z klientem
+-   Pair programming
+
+__Kanban__:
+-   Agile Coach
+-   Proces jest ciągły, nie ma sprintów
+-   Backlogu jedynie projektu
+-   Kanban board z capacity zespołu
+-   Pull z kolumny do kolumny gdy jest wolne capacity
+-   Bardzo dobre np. dla artystów
+
+__Scrum__:
+-   SCRUM Master
+-   Backlog projektu i sprintu
+-   Jeden pull na sprint
+-   Nie powinny się pojawiać nowe stories midsprint
+-   Kanban board
+-   Milestony
+
+__Role Projektowo-procesowe__
+
+Scrum Master - Strażnik procesu; Odpowiedzialny za "niski poziom" procesu, wspomaganie zespołu podczas ceremonii, usuwanie wszelkich przeszkód procesowych
+
+Project Owner - Vision Holder, właściciel produktu; odpowiada za kształt projektu i kierunek developmentu
+
+Project Manager - Właściciel procesu, bardziej wysokopoziomowy, nie odpowiada za kształt projektu tylko po to aby projekt był ukończony
+
+Proces jest dla procesu - Dobrze zaimplemetowany SCRUM jest w pierwszej kolejności narzędziem dla developerów, aby skutecznie implementować zadania, w drugiej narzędziem informacyjntym dla managementu, aby mogli nadzorować projekt i odpowiednio reagować .Nie jest "biczem" na developerów
+
+Samoorganizujący się zespół - Zespół sam decyduje które co zostanie wykonane w konkretnym sprincie, sam określa zakres poszczególnych zadań. sam estymuje czas, jaki jest potrzebny na to, aby zadanie zostało wykonane
+
+Niewielki i interdyscyplinarny zespół - Zespóły SCRUMowe powinny być niewielkie. Dązymy do tego aby w każdym sprincie efektem była wartość dodana do projektu
+
+__Ceremonie SCRUMowe__:
+
+PO & PM Meeting - spotkanie tworzące USER STORIES, określają wszystkie rzeczy nad którymi musimy pracować
+
+Sprint Planning - Spotkanie całego SCRUM Teamu, mające na celu ustalenie co będzie produkowane w najbliższym sprincie
+
+Retrospective - Spotkanie całego zespołu, na którym podsumowywane są wszelkie dobre i złe wydarzenia w procesie
+
+Backlog Refinement - Spotkanie na którym zespół analizuje backlog - nowe i stare Stories i Taski, dokonuje stymacji, rozbicia etc.
+
+Sprint Review - Duże spotkanie pod koniec sprintu, na którym PO odbiera owoce pracy całego zespołu w okresie Sprintu
+
+Daily - Codzienne krótkie spotkanie na którym się raportuje update'y, jakiś problem itd.
+
+__Estymacje__
+
+Jak?:
+-   Roboczodni, Roboczogodziny
+-   Story Points System: złożoność, czasochłonność, zagrożenia
+-   Dlaczego punkty?
+
+Co dalej?:
+-   Refinement i wycena, SCRUM POKER
+-   Możliwość produkcyjne zespołu
+-   Project Backlog -> Sprint Backlog w zależności od capacity zespołu
+
+Zagrożenia:
+-   Estymacja jest trudna, zawsze
+-   Planowanie życzeniowe
+-   SCRUM Poker wydłuża znacząco czas refinementu, zwłaszcza w większych zespołach
+-   Produkt trzeba dowieźć, system punktowy nie może przeszkadzać
+
+At the End - To tylko narzędzia!
+
+__A praktyka?__
+-   Długości sprintów i siatka 2x2x1
+-   Refinement poza ceremoniami
+-   Pipeline designu
+-   Pipeline komunikacji
+-   Filmy prezentacyjne
+-   Balans w ceremoniach
+-   Warto ułożyć wszystko przed skalowaniem zespołu
+-   Agile niech będzie zwinny!
+

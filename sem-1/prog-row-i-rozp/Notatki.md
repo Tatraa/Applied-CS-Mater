@@ -460,3 +460,5 @@ Uwagi o `synchronized`
 Jeśli chcemy zmienić zawartość zmiennej w jednym wątku, to w innym watku w tym samym czasie ......
 
 nie chce mi sie już
+
+Sesja __08.02__
