@@ -462,3 +462,83 @@ Jeśli chcemy zmienić zawartość zmiennej w jednym wątku, to w innym watku w 
 nie chce mi sie już
 
 Sesja __08.02__
+
+
+# Wykład OpenMP
+
+17. 
+Synchronizacja pomięci:
+- widok tymczasowy pamięci oznacza czasowy brak konsystencji z pamięcią ram
+- flush - wymiatanie - wymuszenie konsystencji pamięci
+- wykonywanie operacji wymiecenia oznacza utratę widoku tymczasowego
+
+....
+
+Najważniejsza dyrektywa OpenMP
+
+```c
+#pragma omp parallel [klauzule...]
+{
+    // blok strukturalny
+}
+```
+
+Blok strukturalny jest blokiem instrikcji c/C++ z pojedynczym wejściem i podejynczym wyjściem
+
+Kod nie objęty dyrektywą parallel wykonywany jest sekwencyjnie
+
+Bez dodatkowych dyrektyw kod jest tylko replikowany i wszystkie wątki robią to same
+
+Blok zakończony jest implicite barierą
+
+- konstrukjca prarallel powoduje powstanie teamu wątków
+- wątek, który napotkał parallel staje się masterem teamu wątków, w teamie jest on i zeto lub więcej nowych wątków
+- dla każdego wątku w teamie generowane jest niejawne zadanie
+- wątki są wiązane z zadaniami
+
+Funkcja `omp_set_num_threads()` pozwala przydzielić wątkom różne zadanie
+
+Podział pracy:
+- Praca do wykonywania jest dystrybuowana pomiędzy wątki
+- Wykonywany jest w ramach niejawnych zadań
+- Brak bariery na wejściu
+- Niejwana bariera na wyjściu
+- Konstrukcje: obsługa pętli, sections, sinle
+
+Podstawowe warunki, podziału pracy:
+- Do obszaru podziału pracy wchodzą albo wszystkie wątki z teamu albo żaden
+- Obszary podziału pracy bariery muszą być napotykane w tej samej kolejności
+
+Dyrektywy rozdziału pracy muszą napotkać aktywny obszar równoległy
+
+A co z obszamami sekwencyjnymi i nieaktywnmymi równoległymi?
+
+Aby było ciekawiej ten sam obszar oznaczony dyrektywami rozdziału pracy raz może być wykonany równolegle a chwilę później sekwencyjnie
+
+Podział pracy pętlo:
+- praca przydzielana jest istniejącymw teamie wątkom w kontekście wykonywanych przez nie niejawnych zadań
+- wspierana jest tylko pętla for
+
+Warunki:
+- ilość iteracji musi być znana w chwilo wejścia do bloku pętli
+- ilość iteracji nie może podlegać zmianie w trakcie pracy tej pętli
+- iteracje są niezależne
+- ograniczenie na typ zmiennej zliczającej iteracje
+
+# Wykład 2 OpenMP
+
+Synchronizacja wątków - Dyrektywy synchronizacji pozwalają zaprowadzić porządek w dostępie do zasobów współdzielonych
+
+Bariera - `#pragma omp barrier`
+
+Dyrektywa porządkowania wątków - `pragma omp oprdered`
+
+W obszarze zrównoleglenia pracy możliwe jest oznaczenie regiony, który ma być wykonywany w naturalnej kolejności
+
+# CUDA
+
+Compute Unified Device Architecture
+
+
+
+KONIEC WYKŁADU NA RPC

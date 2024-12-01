@@ -2,6 +2,14 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+
+# symulacja i analityczny bardzo ważny - "dosłownie przyjmuje wartość 1"
+
+# D - tylko sprawdza wykres tyle
+
+# C 
+
+
 class RuinsParam(object):
     """
     A - Gracz A
