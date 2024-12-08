@@ -5,7 +5,7 @@
 #include "Antenna.h"
 #include "Function.h"
 #include "MathHelper.h"
-#include "SequentialSwarm.h"
+#include "ParallelSwarm.h"
 #include "SimpleAntenna.h"
 #include "SimpleExpFunction.h"
 #include "Swarm.h"
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
   Antenna *antenna = new SimpleAntenna(
       TARGET_NEIGHBOURS, max_distance / ANTENNA_MIN_RANGE_DIV,
       max_distance / ANTENNA_MAX_RANGE_DIV, ANTENNA_RANGE_MODIFIER);
-  Swarm *swarm = new SequentialSwarm(ROBOTS, antenna, function);
+  Swarm *swarm = new ParallelSwarm(ROBOTS, antenna, function);
 
   if (!rank) {
     initialize_swarm(swarm, function, ROBOTS);

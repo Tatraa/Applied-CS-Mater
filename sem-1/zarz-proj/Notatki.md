@@ -184,3 +184,53 @@ __A praktyka?__
 -   Warto ułożyć wszystko przed skalowaniem zespołu
 -   Agile niech będzie zwinny!
 
+## Wykład 3
+
+__Struktura Zespołów__
+
+__Head Działu__ - Wytycza kierunek swojego działu, projektuje procesy i odpowiada za cały kształt i podległej części projektów
+
+__Lead działu__ - Stanowisko o kompetencjach tak produkcyjnych jak i zarządzających; jest odpowiedzialny za produkcję i wspomaganie zespołu w codziennych problemach
+
+__Junior__ - małe doświadcz3enie i umiejętności, wymaga prowadzenia
+
+__Senior__ - Duże doświadczenie w swojej dziedzinie, wieloletni staż pracy
+
+Stanowisko a odpowiedzialność - Rozwój w hierarchii zespołu, to nie tylko doświadczenie w aspekcie technicznym ale i kompetencje miękkie. Nawet Senior poza produkcją, cżeso delegowany jest do pomocy/mentoringu młodszym stażem pracowników.
+
+W związku z tym, seniorzy, leadzi i headzi są odpowiedzialni za pracę działu, atmosferę i kolejno ponoszą odpowiedzialność w razie problemów produkcyjnych.
+
+__Zespoły interdyscyplinarne__
+
+__Code Team__ - Programiści silnika, gameplay'u
+
+__Art Team__ - Art Director, koncept artyści, graficy 3D
+
+__QA Team__ - Gameplay Testing, Compliance testing, Destructive tests
+
+__Creative Director__ - Project Owner, główny designer
+
+__Producer__ - Nadzór projektowy, zagadnienia związane z budżetem projektowym
+
+__Design Team__ - Game Design, Level Design
+
+__Biznesplan 101__ - Mówiliśmy trochę o pithowaniu projektów. Czasem warto jednak wcześniej/równocześnie zacząć myśleć o założeniu działalności.
+
+Elementy Biznespalnu - Streszczenie, charakterystyka firmy, produkty, Struktura firmy, Analizy rybku, Marketing, Finanse
+
+Skąd wziąć finansowanie? Niestety, nie ma drogi idealnej. Darmowe pięniądze nigdy nie są darmowe... co nie znaczy, że nie warto z nich korzystać
+
+Środki własne, kredyty, dotacje, crowd-funcding, aniołowie biznesu, inne
+
+Gdzie szukać? Konferencje - PAX East, GDC, Digital Dragons, gamescom
+
+Milestone plan:
+
+- To jest ważny dokument
+- Operajmy się na danych
+- Narzędzie jest nieważne
+- Nowe życie Gantta
+- Waterfall vs Agile
+- Bufory na buforach
+
+Business is business... ale pieniądze to nie wszystko. Plan to podstawa, metodyki są by pomóc - USP
