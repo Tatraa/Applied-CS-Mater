@@ -1,233 +1,250 @@
--- main.lua
-local love = require("love")
+-- Tetris in LÖVE 2D
 
+-- Initialize game variables
 local grid = {}
-local currentPiece
-local nextPiece
-local pieceX, pieceY
-local pieceRotation
-local gameOver
+local gridWidth, gridHeight = 10, 20
+local cellSize = 30
+local tetrominoes = {}
+local currentPiece = nil
+local nextPiece = nil
+local gameOver = false
+local dropTimer = 0
+local dropInterval = 0.5 -- Control speed of falling pieces
 
-local pieces = {
-    {{1, 1, 1, 1}}, -- I
-    {{1, 1, 1}, {0, 1, 0}}, -- T
-    {{1, 1, 0}, {0, 1, 1}}, -- S
-    {{0, 1, 1}, {1, 1, 0}}, -- Z
-    {{1, 1}, {1, 1}} -- O
-}
-
+-- Colors for tetrominoes
 local colors = {
-    {0, 1, 1},
-    {1, 0, 1},
-    {0, 1, 0},
-    {1, 0, 0},
-    {1, 1, 0}
+    {1, 0, 0},    -- Red
+    {0, 1, 0},    -- Green
+    {0, 0, 1},    -- Blue
+    {1, 1, 0},    -- Yellow
 }
 
-local function newPiece()
-    local index = love.math.random(#pieces)
-    currentPiece = pieces[index]
-    pieceX = 4
-    pieceY = 0
-    pieceRotation = 1
-end
+-- Tetromino shapes
+local shapes = {
+    {{1, 1, 1}, {0, 1, 0}},     -- T-shape
+    {{1, 1}, {1, 1}},           -- O-shape
+    {{1, 0, 0}, {1, 1, 1}},     -- L-shape
+    {{0, 0, 1}, {1, 1, 1}},     -- J-shape
+}
 
-local function rotatePiece()
-    local newPiece = {}
-    for y = 1, #currentPiece[1] do
-        newPiece[y] = {}
-        for x = 1, #currentPiece do
-            newPiece[y][x] = currentPiece[#currentPiece - x + 1][y]
+-- Initialize grid
+local function initializeGrid()
+    for y = 1, gridHeight do
+        grid[y] = {}
+        for x = 1, gridWidth do
+            grid[y][x] = 0
         end
     end
-    currentPiece = newPiece
 end
 
-local function canPlacePiece(px, py, piece)
-    for y = 1, #piece do
-        for x = 1, #piece[y] do
-            if piece[y][x] == 1 then
-                local gx, gy = px + x, py + y
-                if gx < 1 or gx > 10 or gy > 20 or (gy > 0 and grid[gy][gx] ~= 0) then
-                    return false
+local function rotatePiece(piece)
+    local newShape = {}
+    for y = 1, #piece.shape[1] do
+        newShape[y] = {}
+        for x = 1, #piece.shape do
+            newShape[y][x] = piece.shape[#piece.shape - x + 1][y]
+        end
+    end
+    return newShape
+end
+
+-- Spawn a new tetromino
+local function spawnTetromino()
+    local shapeIndex = love.math.random(1, #shapes)
+    local shape = shapes[shapeIndex]
+    currentPiece = {
+        shape = shape,
+        x = math.floor(gridWidth / 2) - math.floor(#shape[1] / 2),
+        y = 1,
+        color = colors[shapeIndex],
+    }
+end
+
+-- Draw the grid and pieces
+local function drawGrid()
+    for y = 1, gridHeight do
+        for x = 1, gridWidth do
+            if grid[y][x] ~= 0 then
+                love.graphics.setColor(grid[y][x])
+                love.graphics.rectangle("fill", (x - 1) * cellSize, (y - 1) * cellSize, cellSize, cellSize)
+            end
+        end
+    end
+end
+
+local function drawTetromino(piece)
+    if not piece then return end
+    love.graphics.setColor(piece.color)
+    for row = 1, #piece.shape do
+        for col = 1, #piece.shape[row] do
+            if piece.shape[row][col] ~= 0 then
+                love.graphics.rectangle(
+                    "fill",
+                    (piece.x + col - 2) * cellSize,
+                    (piece.y + row - 2) * cellSize,
+                    cellSize,
+                    cellSize
+                )
+            end
+        end
+    end
+end
+
+-- Check collision
+local function checkCollision(piece, offsetX, offsetY)
+    for row = 1, #piece.shape do
+        for col = 1, #piece.shape[row] do
+            if piece.shape[row][col] ~= 0 then
+                local newX = piece.x + col - 1 + offsetX
+                local newY = piece.y + row - 1 + offsetY
+                if newX < 1 or newX > gridWidth or newY > gridHeight or (grid[newY] and grid[newY][newX] ~= 0) then
+                    return true
                 end
             end
         end
     end
-    return true
+    return false
 end
 
-local function placePiece()
-    for y = 1, #currentPiece do
-        for x = 1, #currentPiece[y] do
-            if currentPiece[y][x] == 1 then
-                grid[pieceY + y][pieceX + x] = 1
+-- Lock tetromino in grid
+local function lockTetromino(piece)
+    for row = 1, #piece.shape do
+        for col = 1, #piece.shape[row] do
+            if piece.shape[row][col] ~= 0 then
+                local gridX = piece.x + col - 1
+                local gridY = piece.y + row - 1
+                grid[gridY][gridX] = piece.color
             end
         end
     end
+    sounds.drop:play()
 end
 
+local clearAnimation = {}
+-- Clear full lines
 local function clearLines()
-    for y = 20, 1, -1 do
+    for y = gridHeight, 1, -1 do
         local full = true
-        for x = 1, 10 do
+        for x = 1, gridWidth do
             if grid[y][x] == 0 then
                 full = false
                 break
             end
         end
         if full then
+            table.insert(clearAnimation, y)
             table.remove(grid, y)
-            table.insert(grid, 1, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
-        end
-    end
-end
-
-function love.load()
-    love.window.setMode(800, 600)
-    love.window.setTitle("Tetris")
-    for y = 1, 20 do
-        grid[y] = {}
-        for x = 1, 10 do
-            grid[y][x] = 0
-        end
-    end
-    newPiece()
-    gameOver = false
-end
-
-function love.draw()
-    for y = 1, 20 do
-        for x = 1, 10 do
-            if grid[y][x] == 1 then
-                love.graphics.setColor(1, 1, 1)
-                love.graphics.rectangle("fill", (x - 1) * 30, (y - 1) * 30, 30, 30)
+            table.insert(grid, 1, {})
+            for x = 1, gridWidth do
+                grid[1][x] = 0
             end
+            sounds.clear:play()
         end
     end
-    for y = 1, #currentPiece do
-        for x = 1, #currentPiece[y] do
-            if currentPiece[y][x] == 1 then
-                love.graphics.setColor(1, 1, 1)
-                love.graphics.rectangle("fill", (pieceX + x - 1) * 30, (pieceY + y - 1) * 30, 30, 30)
+end
+
+-- Update game state
+local function updateGame(dt)
+    dropTimer = dropTimer + dt
+    if dropTimer >= dropInterval then
+        dropTimer = 0
+        if not currentPiece then
+            spawnTetromino()
+        else
+            if not checkCollision(currentPiece, 0, 1) then
+                currentPiece.y = currentPiece.y + 1
+            else
+                lockTetromino(currentPiece)
+                clearLines()
+                currentPiece = nil
             end
         end
     end
 end
 
-function love.update(dt)
-    if gameOver then return end
-    pieceY = pieceY + 1
-    if not canPlacePiece(pieceX, pieceY, currentPiece) then
-        pieceY = pieceY - 1
-        placePiece()
-        clearLines()
-        newPiece()
-        if not canPlacePiece(pieceX, pieceY, currentPiece) then
-            gameOver = true
-        end
-    end
-end
+-- Handle player input
+local function handleInput(key)
+    if not currentPiece then return end
 
-function love.keypressed(key)
-    if key == "left" then
-        if canPlacePiece(pieceX - 1, pieceY, currentPiece) then
-            pieceX = pieceX - 1
-        end
-    elseif key == "right" then
-        if canPlacePiece(pieceX + 1, pieceY, currentPiece) then
-            pieceX = pieceX + 1
-        end
-    elseif key == "down" then
-        if canPlacePiece(pieceX, pieceY + 1, currentPiece) then
-            pieceY = pieceY + 1
-        end
+    if key == "left" and not checkCollision(currentPiece, -1, 0) then
+        currentPiece.x = currentPiece.x - 1
+        sounds.move:play()
+    elseif key == "right" and not checkCollision(currentPiece, 1, 0) then
+        currentPiece.x = currentPiece.x + 1
+        sounds.move:play()
+    elseif key == "down" and not checkCollision(currentPiece, 0, 1) then
+        currentPiece.y = currentPiece.y + 1
+        sounds.move:play()
     elseif key == "up" then
-        rotatePiece()
-        if not canPlacePiece(pieceX, pieceY, currentPiece) then
-            rotatePiece()
-            rotatePiece()
-            rotatePiece()
+        local rotatedShape = rotatePiece(currentPiece)
+        if not checkCollision({shape = rotatedShape, x = currentPiece.x, y = currentPiece.y}, 0, 0) then
+            currentPiece.shape = rotatedShape
+            sounds.rotate:play()
         end
     end
 end
 
-local json = require("json") -- Użyjemy modułu JSON do zapisu i odczytu stanu gry
-
-function saveGame()
-    local gameState = {
+local function saveGame()
+    local saveData = {
         grid = grid,
         currentPiece = currentPiece,
-        pieceX = pieceX,
-        pieceY = pieceY,
-        pieceRotation = pieceRotation,
-        gameOver = gameOver
+        nextPiece = nextPiece,
+        gameOver = gameOver,
     }
-    local gameStateString = json.encode(gameState)
-    love.filesystem.write("savegame.json", gameStateString)
+    love.filesystem.write("savegame.lua", table.show(saveData, "saveData"))
 end
 
-function loadGame()
-    if love.filesystem.getInfo("savegame.json") then
-        local gameStateString = love.filesystem.read("savegame.json")
-        local gameState = json.decode(gameStateString)
-        grid = gameState.grid
-        currentPiece = gameState.currentPiece
-        pieceX = gameState.pieceX
-        pieceY = gameState.pieceY
-        pieceRotation = gameState.pieceRotation
-        gameOver = gameState.gameOver
+local function loadGame()
+    if love.filesystem.getInfo("savegame.lua") then
+        local chunk = love.filesystem.load("savegame.lua")
+        chunk()
+        grid = saveData.grid
+        currentPiece = saveData.currentPiece
+        nextPiece = saveData.nextPiece
+        gameOver = saveData.gameOver
     end
 end
 
 local sounds = {
-    move = love.audio.newSource("move.wav", "static"),
-    rotate = love.audio.newSource("rotate.wav", "static"),
-    line = love.audio.newSource("line.wav", "static"),
-    gameOver = love.audio.newSource("gameover.wav", "static")
+    rotate = love.audio.newSource("rotate.mp3", "static"),
+    move = love.audio.newSource("move.mp3", "static"),
+    drop = love.audio.newSource("drop.mp3", "static"),
+    clear = love.audio.newSource("clear.mp3", "static"),
 }
 
-function playSound(action)
-    if sounds[action] then
-        sounds[action]:play()
+function love.load()
+    love.window.setMode(gridWidth * cellSize, gridHeight * cellSize)
+    initializeGrid()
+end
+
+function love.update(dt)
+    if not gameOver then
+        updateGame(dt)
     end
 end
 
-function playAnimation()
-    -- Przykładowa animacja przy zbijaniu linii
-    -- Można dodać bardziej zaawansowane animacje
-    for y = 1, 20 do
-        for x = 1, 10 do
-            if grid[y][x] == 1 then
-                love.graphics.setColor(1, 0, 0)
-                love.graphics.rectangle("fill", (x - 1) * 30, (y - 1) * 30, 30, 30)
-            end
-        end
+function love.keypressed(key)
+    if key == "escape" then
+        love.event.quit()
+    elseif key == "s" then
+        saveGame()
+    elseif key == "l" then
+        loadGame()
+    elseif not gameOver then
+        handleInput(key)
     end
 end
 
-function love.touchpressed(id, x, y, dx, dy, pressure)
-    local gridX = math.floor(x / 30) + 1
-    local gridY = math.floor(y / 30) + 1
-
-    if gridX < pieceX then
-        if canPlacePiece(pieceX - 1, pieceY, currentPiece) then
-            pieceX = pieceX - 1
-        end
-    elseif gridX > pieceX then
-        if canPlacePiece(pieceX + 1, pieceY, currentPiece) then
-            pieceX = pieceX + 1
-        end
-    elseif gridY > pieceY then
-        if canPlacePiece(pieceX, pieceY + 1, currentPiece) then
-            pieceY = pieceY + 1
-        end
-    else
-        rotatePiece()
-        if not canPlacePiece(pieceX, pieceY, currentPiece) then
-            rotatePiece()
-            rotatePiece()
-            rotatePiece()
-        end
+local function drawClearAnimation()
+    for _, y in ipairs(clearAnimation) do
+        love.graphics.setColor(1, 1, 1, 0.5)
+        love.graphics.rectangle("fill", 0, (y - 1) * cellSize, gridWidth * cellSize, cellSize)
     end
+end
+
+function love.draw()
+    love.graphics.clear(0, 0, 0)
+    drawGrid()
+    drawTetromino(currentPiece)
+    drawClearAnimation()
 end

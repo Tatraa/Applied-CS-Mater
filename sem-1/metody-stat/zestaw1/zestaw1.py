@@ -1,49 +1,28 @@
-import pandas as pd 
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Parametry
+lambda_rate = 1  # Intensywność procesu (1/min)
+n_steps = 100     # Liczba skoków
 
-# symulacja i analityczny bardzo ważny - "dosłownie przyjmuje wartość 1"
+# Funkcja generująca czas losowy metodą odwracania dystrybuanty
+def generate_exponential_time(lambda_rate, size=1):
+    u = np.random.uniform(0, 1, size)  # Losowe wartości z [0, 1]
+    return -np.log(1 - u) / lambda_rate
 
-# D - tylko sprawdza wykres tyle
+# Generowanie trajektorii procesu Poissona
+interarrival_times = generate_exponential_time(lambda_rate, n_steps)  # Czas między skokami
+arrival_times = np.cumsum(interarrival_times)  # Czasy przyjścia
 
-# C 
+# Wartość procesu w czasie
+time_points = np.insert(arrival_times, 0, 0)  # Dodaj czas początkowy
+process_values = np.arange(len(time_points)) - 1  # Wartości procesu (zaczynamy od 0)
 
-
-class RuinsParam(object):
-    """
-    A - Gracz A
-    B - Gracz B
-    a - kapitał gracza A
-    b - kapitał gracza B
-    pA - prawdopodobieństwo wygranej tury przez gracza A
-    pB - prawdopodobieństwo wygranej tury przez gracza B
-    qA - prawdopodobieństwo przegranej tury przez gracza A
-    qB - prawdopodobieństwo przegranej tury przez gracza B
-    """
-    def __init__(self, A, B, a, b, pA, pB, qA, qB):
-        self.A = A
-        self.B = B
-        self.a = a
-        self.b = b
-        self.pA = pA
-        self.pB = pB
-        self.qA = qA
-        self.qB = qB
-        
-
-class GameA(RuinsParam):
-    def simulate(self, num_simulations=1000):
-        ruins = 0
-        for _ in range(num_simulations):
-            a, b = self.a, self.b
-            while a > 0 and b > 0:
-                if np.random.rand() < self.pA:
-                    b -= 1
-                else:
-                    a -= 1
-            if a == 0:
-                ruins += 1
-        return ruins / num_simulations
-
-
+# Wizualizacja
+plt.step(time_points, process_values, where='post', label="Proces Poissona")
+plt.xlabel("Czas [min]")
+plt.ylabel("Wartość procesu")
+plt.title("Trajektoria procesu Poissona")
+plt.grid()
+plt.legend()
+plt.show()
